@@ -4,7 +4,7 @@ const amountInput = document.getElementById("amount");
 const typeInput = document.getElementById("type");
 const categoryInput = document.getElementById("category");
 const dateInput = document.getElementById("date");
-const transactionList = document.getElementById("transactionList");
+const editIdInput = document.getElementById("editId");
 
 const balanceEl = document.getElementById("balance");
 const incomeEl = document.getElementById("income");
@@ -14,19 +14,31 @@ const cardBalanceEl = document.getElementById("cardBalance");
 const cardIncomeEl = document.getElementById("cardIncome");
 const cardExpenseEl = document.getElementById("cardExpense");
 
+const incomeBar = document.getElementById("incomeBar");
+const expenseBar = document.getElementById("expenseBar");
+
+const transactionList = document.getElementById("transactionList");
 const filterButtons = document.querySelectorAll(".filter-btn");
 const langButtons = document.querySelectorAll(".lang-btn");
+const cancelEditBtn = document.getElementById("cancelEditBtn");
+const submitBtn = document.getElementById("submitBtn");
+const formTitle = document.getElementById("formTitle");
+const searchInput = document.getElementById("searchInput");
+const categoryFilter = document.getElementById("categoryFilter");
+const exportCsvBtn = document.getElementById("exportCsvBtn");
+const themeToggle = document.getElementById("themeToggle");
 
 const translations = {
   pt: {
-    pageTitle: "Finance Tracker Premium",
-    tag: "Finance Tracker",
-    heroTitle: "Controle o seu dinheiro com um dashboard moderno e premium.",
-    heroText: "Registe entradas e despesas, acompanhe o saldo e organize melhor a sua vida financeira com um visual bonito e profissional.",
+    pageTitle: "FinanceFlow V2",
+    tag: "Finance Tracker V2",
+    heroTitle: "Controle o seu dinheiro com um dashboard moderno e inteligente.",
+    heroText: "Registe entradas e despesas, filtre, pesquise, edite transações e acompanhe tudo num visual premium.",
     currentBalance: "Saldo Atual",
     income: "Entradas",
     expenses: "Despesas",
     addTransaction: "Adicionar Transação",
+    editTransaction: "Editar Transação",
     registerIncomeExpense: "Registe as suas entradas e despesas",
     titleLabel: "Título",
     titlePlaceholder: "Ex: Salário, Compras, Internet",
@@ -36,12 +48,18 @@ const translations = {
     categoryLabel: "Categoria",
     dateLabel: "Data",
     addTransactionBtn: "Adicionar Transação",
+    saveChangesBtn: "Guardar Alterações",
+    cancel: "Cancelar",
     totalBalance: "Saldo Total",
     totalIncome: "Total de Entradas",
     totalExpenses: "Total de Despesas",
+    financialOverview: "Resumo Financeiro",
+    chartText: "Comparação visual entre entradas e despesas",
     transactions: "Transações",
     latestActivity: "A sua atividade financeira mais recente",
     filterAll: "Todas",
+    allCategories: "Todas as categorias",
+    searchPlaceholder: "Pesquisar por título...",
     catSalary: "Salário",
     catFood: "Comida",
     catTransport: "Transporte",
@@ -53,18 +71,22 @@ const translations = {
     badgeIncome: "Entrada",
     badgeExpense: "Despesa",
     delete: "Apagar",
-    emptyState: "Ainda não existem transações.",
+    edit: "Editar",
+    emptyState: "Ainda não existem transações com esse filtro.",
     invalidForm: "Preenche todos os campos corretamente.",
+    csvName: "transacoes-financeflow.csv",
+    exportCsv: "⬇️ CSV"
   },
   en: {
-    pageTitle: "Finance Tracker Premium",
-    tag: "Finance Tracker",
-    heroTitle: "Control your money with a modern and premium dashboard.",
-    heroText: "Track income and expenses, monitor your balance, and organize your financial life with a beautiful and professional interface.",
+    pageTitle: "FinanceFlow V2",
+    tag: "Finance Tracker V2",
+    heroTitle: "Control your money with a modern and smart dashboard.",
+    heroText: "Track income and expenses, filter, search, edit transactions and manage everything with a premium interface.",
     currentBalance: "Current Balance",
     income: "Income",
     expenses: "Expenses",
     addTransaction: "Add Transaction",
+    editTransaction: "Edit Transaction",
     registerIncomeExpense: "Register your income and expenses",
     titleLabel: "Title",
     titlePlaceholder: "Ex: Salary, Groceries, Internet",
@@ -74,12 +96,18 @@ const translations = {
     categoryLabel: "Category",
     dateLabel: "Date",
     addTransactionBtn: "Add Transaction",
+    saveChangesBtn: "Save Changes",
+    cancel: "Cancel",
     totalBalance: "Total Balance",
     totalIncome: "Total Income",
     totalExpenses: "Total Expenses",
+    financialOverview: "Financial Overview",
+    chartText: "Visual comparison between income and expenses",
     transactions: "Transactions",
     latestActivity: "Your latest financial activity",
     filterAll: "All",
+    allCategories: "All categories",
+    searchPlaceholder: "Search by title...",
     catSalary: "Salary",
     catFood: "Food",
     catTransport: "Transport",
@@ -91,14 +119,18 @@ const translations = {
     badgeIncome: "Income",
     badgeExpense: "Expense",
     delete: "Delete",
-    emptyState: "No transactions found yet.",
+    edit: "Edit",
+    emptyState: "No transactions found for this filter.",
     invalidForm: "Please fill in all fields correctly.",
+    csvName: "financeflow-transactions.csv",
+    exportCsv: "⬇️ CSV"
   }
 };
 
-let transactions = JSON.parse(localStorage.getItem("financeTransactions")) || [];
+let transactions = JSON.parse(localStorage.getItem("financeFlowTransactions")) || [];
 let currentFilter = "all";
-let currentLang = localStorage.getItem("financeLanguage") || "pt";
+let currentLang = localStorage.getItem("financeFlowLanguage") || "pt";
+let currentTheme = localStorage.getItem("financeFlowTheme") || "dark";
 
 dateInput.valueAsDate = new Date();
 
@@ -113,8 +145,19 @@ function formatCurrency(value) {
   }).format(value);
 }
 
+function formatDate(dateString) {
+  const locale = currentLang === "pt" ? "pt-PT" : "en-GB";
+  return new Date(dateString + "T00:00:00").toLocaleDateString(locale);
+}
+
+function escapeHTML(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 function saveTransactions() {
-  localStorage.setItem("financeTransactions", JSON.stringify(transactions));
+  localStorage.setItem("financeFlowTransactions", JSON.stringify(transactions));
 }
 
 function getTranslatedCategory(category) {
@@ -151,18 +194,44 @@ function updateSummary() {
   cardBalanceEl.textContent = formatCurrency(balance);
   cardIncomeEl.textContent = formatCurrency(income);
   cardExpenseEl.textContent = formatCurrency(expense);
+
+  updateChart(income, expense);
+}
+
+function updateChart(income, expense) {
+  const total = income + expense;
+
+  if (total === 0) {
+    incomeBar.style.width = "0%";
+    expenseBar.style.width = "0%";
+    return;
+  }
+
+  incomeBar.style.width = `${(income / total) * 100}%`;
+  expenseBar.style.width = `${(expense / total) * 100}%`;
+}
+
+function getFilteredTransactions() {
+  const searchValue = searchInput.value.trim().toLowerCase();
+  const categoryValue = categoryFilter.value;
+
+  return transactions.filter(transaction => {
+    const matchesType =
+      currentFilter === "all" || transaction.type === currentFilter;
+
+    const matchesCategory =
+      categoryValue === "all" || transaction.category === categoryValue;
+
+    const matchesSearch =
+      transaction.title.toLowerCase().includes(searchValue);
+
+    return matchesType && matchesCategory && matchesSearch;
+  });
 }
 
 function renderTransactions() {
   transactionList.innerHTML = "";
-
-  let filteredTransactions = transactions;
-
-  if (currentFilter !== "all") {
-    filteredTransactions = transactions.filter(
-      transaction => transaction.type === currentFilter
-    );
-  }
+  const filteredTransactions = getFilteredTransactions();
 
   if (filteredTransactions.length === 0) {
     transactionList.innerHTML = `
@@ -202,21 +271,45 @@ function renderTransactions() {
           ${transaction.type === "income" ? "+" : "-"}${formatCurrency(transaction.amount)}
         </div>
 
-        <button class="delete-btn" data-id="${transaction.id}">
-          ${translations[currentLang].delete}
-        </button>
+        <div class="action-group">
+          <button class="edit-btn" data-action="edit" data-id="${transaction.id}">
+            ${translations[currentLang].edit}
+          </button>
+          <button class="delete-btn" data-action="delete" data-id="${transaction.id}">
+            ${translations[currentLang].delete}
+          </button>
+        </div>
       `;
 
       transactionList.appendChild(item);
     });
 }
 
-function formatDate(dateString) {
-  const locale = currentLang === "pt" ? "pt-PT" : "en-GB";
-  return new Date(dateString + "T00:00:00").toLocaleDateString(locale);
+function resetFormState() {
+  editIdInput.value = "";
+  form.reset();
+  dateInput.valueAsDate = new Date();
+  formTitle.textContent = translations[currentLang].addTransaction;
+  submitBtn.textContent = translations[currentLang].addTransactionBtn;
+  cancelEditBtn.style.display = "none";
 }
 
-function addTransaction(event) {
+function fillFormForEdit(transaction) {
+  editIdInput.value = transaction.id;
+  titleInput.value = transaction.title;
+  amountInput.value = transaction.amount;
+  typeInput.value = transaction.type;
+  categoryInput.value = transaction.category;
+  dateInput.value = transaction.date;
+
+  formTitle.textContent = translations[currentLang].editTransaction;
+  submitBtn.textContent = translations[currentLang].saveChangesBtn;
+  cancelEditBtn.style.display = "inline-flex";
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function addOrUpdateTransaction(event) {
   event.preventDefault();
 
   const title = titleInput.value.trim();
@@ -224,28 +317,36 @@ function addTransaction(event) {
   const type = typeInput.value;
   const category = categoryInput.value;
   const date = dateInput.value;
+  const editId = editIdInput.value;
 
   if (!title || !amount || amount <= 0 || !date) {
     alert(translations[currentLang].invalidForm);
     return;
   }
 
-  const newTransaction = {
-    id: crypto.randomUUID(),
-    title,
-    amount,
-    type,
-    category,
-    date
-  };
+  if (editId) {
+    transactions = transactions.map(transaction =>
+      transaction.id === editId
+        ? { ...transaction, title, amount, type, category, date }
+        : transaction
+    );
+  } else {
+    const newTransaction = {
+      id: crypto.randomUUID(),
+      title,
+      amount,
+      type,
+      category,
+      date
+    };
 
-  transactions.push(newTransaction);
+    transactions.push(newTransaction);
+  }
+
   saveTransactions();
   updateSummary();
   renderTransactions();
-
-  form.reset();
-  dateInput.valueAsDate = new Date();
+  resetFormState();
 }
 
 function deleteTransaction(id) {
@@ -253,11 +354,56 @@ function deleteTransaction(id) {
   saveTransactions();
   updateSummary();
   renderTransactions();
+
+  if (editIdInput.value === id) {
+    resetFormState();
+  }
+}
+
+function exportToCSV() {
+  if (transactions.length === 0) return;
+
+  const rows = [
+    ["Title", "Amount", "Type", "Category", "Date"],
+    ...transactions.map(transaction => [
+      transaction.title,
+      transaction.amount,
+      transaction.type,
+      transaction.category,
+      transaction.date
+    ])
+  ];
+
+  const csvContent = rows
+    .map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(","))
+    .join("\\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = translations[currentLang].csvName;
+  link.click();
+
+  URL.revokeObjectURL(url);
+}
+
+function applyTheme() {
+  document.body.classList.toggle("light", currentTheme === "light");
+  themeToggle.textContent = currentTheme === "light" ? "☀️" : "🌙";
+}
+
+function toggleTheme() {
+  currentTheme = currentTheme === "dark" ? "light" : "dark";
+  localStorage.setItem("financeFlowTheme", currentTheme);
+  applyTheme();
 }
 
 function updateStaticTexts() {
   document.documentElement.lang = currentLang;
   document.title = translations[currentLang].pageTitle;
+  exportCsvBtn.textContent = translations[currentLang].exportCsv;
 
   document.querySelectorAll("[data-i18n]").forEach(element => {
     const key = element.dataset.i18n;
@@ -280,20 +426,24 @@ function updateStaticTexts() {
   langButtons.forEach(button => {
     button.classList.toggle("active", button.dataset.lang === currentLang);
   });
+
+  if (editIdInput.value) {
+    formTitle.textContent = translations[currentLang].editTransaction;
+    submitBtn.textContent = translations[currentLang].saveChangesBtn;
+    cancelEditBtn.style.display = "inline-flex";
+  } else {
+    formTitle.textContent = translations[currentLang].addTransaction;
+    submitBtn.textContent = translations[currentLang].addTransactionBtn;
+    cancelEditBtn.style.display = "none";
+  }
 }
 
 function setLanguage(lang) {
   currentLang = lang;
-  localStorage.setItem("financeLanguage", lang);
+  localStorage.setItem("financeFlowLanguage", lang);
   updateStaticTexts();
   updateSummary();
   renderTransactions();
-}
-
-function escapeHTML(text) {
-  const div = document.createElement("div");
-  div.textContent = text;
-  return div.innerHTML;
 }
 
 filterButtons.forEach(button => {
@@ -310,14 +460,31 @@ langButtons.forEach(button => {
   });
 });
 
+searchInput.addEventListener("input", renderTransactions);
+categoryFilter.addEventListener("change", renderTransactions);
+
 transactionList.addEventListener("click", event => {
-  if (event.target.classList.contains("delete-btn")) {
-    deleteTransaction(event.target.dataset.id);
+  const button = event.target.closest("button");
+  if (!button) return;
+
+  const { action, id } = button.dataset;
+
+  if (action === "delete") {
+    deleteTransaction(id);
+  }
+
+  if (action === "edit") {
+    const transaction = transactions.find(item => item.id === id);
+    if (transaction) fillFormForEdit(transaction);
   }
 });
 
-form.addEventListener("submit", addTransaction);
+cancelEditBtn.addEventListener("click", resetFormState);
+form.addEventListener("submit", addOrUpdateTransaction);
+exportCsvBtn.addEventListener("click", exportToCSV);
+themeToggle.addEventListener("click", toggleTheme);
 
+applyTheme();
 updateStaticTexts();
 updateSummary();
 renderTransactions();

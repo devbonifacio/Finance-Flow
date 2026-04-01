@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Finance Tracker</title>
+  <title>FinanceFlow V2</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,18 +13,30 @@
   <div class="bg-orb orb-1"></div>
   <div class="bg-orb orb-2"></div>
 
-  <div class="language-switch glass-soft">
-    <button class="lang-btn active" data-lang="pt">PT</button>
-    <button class="lang-btn" data-lang="en">EN</button>
-  </div>
+  <header class="topbar glass-soft">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <span>FinanceFlow V2</span>
+    </div>
+
+    <div class="topbar-actions">
+      <div class="language-switch">
+        <button class="lang-btn active" data-lang="pt">PT</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+
+      <button id="themeToggle" class="icon-btn">🌙</button>
+      <button id="exportCsvBtn" class="icon-btn">⬇️ CSV</button>
+    </div>
+  </header>
 
   <main class="app">
     <section class="hero">
       <div class="hero-text">
-        <span class="tag" data-i18n="tag">Finance Tracker</span>
-        <h1 data-i18n="heroTitle">Controle o seu dinheiro com um dashboard moderno e premium.</h1>
+        <span class="tag" data-i18n="tag">Finance Tracker V2</span>
+        <h1 data-i18n="heroTitle">Controle o seu dinheiro com um dashboard moderno e inteligente.</h1>
         <p data-i18n="heroText">
-          Registe entradas e despesas, acompanhe o saldo e organize melhor a sua vida financeira com um visual bonito e profissional.
+          Registe entradas e despesas, filtre, pesquise, edite transações e acompanhe tudo num visual premium.
         </p>
       </div>
 
@@ -45,13 +57,15 @@
     </section>
 
     <section class="dashboard">
-      <div class="left-panel glass">
+      <aside class="left-panel glass">
         <div class="section-header">
-          <h3 data-i18n="addTransaction">Adicionar Transação</h3>
+          <h3 id="formTitle" data-i18n="addTransaction">Adicionar Transação</h3>
           <p data-i18n="registerIncomeExpense">Registe as suas entradas e despesas</p>
         </div>
 
         <form id="transactionForm" class="form-grid">
+          <input type="hidden" id="editId" />
+
           <div class="input-group">
             <label for="title" data-i18n="titleLabel">Título</label>
             <input type="text" id="title" data-i18n-placeholder="titlePlaceholder" placeholder="Ex: Salário, Compras, Internet" required />
@@ -93,11 +107,14 @@
             <input type="date" id="date" required />
           </div>
 
-          <button type="submit" class="btn-primary full-width" data-i18n="addTransactionBtn">Adicionar Transação</button>
+          <div class="form-actions full-width">
+            <button type="submit" class="btn-primary" id="submitBtn" data-i18n="addTransactionBtn">Adicionar Transação</button>
+            <button type="button" class="btn-secondary" id="cancelEditBtn" data-i18n="cancel">Cancelar</button>
+          </div>
         </form>
-      </div>
+      </aside>
 
-      <div class="right-panel">
+      <section class="right-panel">
         <div class="stats-grid">
           <article class="stat-card glass">
             <p data-i18n="totalBalance">Saldo Total</p>
@@ -115,23 +132,66 @@
           </article>
         </div>
 
+        <div class="chart-card glass">
+          <div class="chart-header">
+            <h3 data-i18n="financialOverview">Resumo Financeiro</h3>
+            <p data-i18n="chartText">Comparação visual entre entradas e despesas</p>
+          </div>
+
+          <div class="chart-bars">
+            <div class="chart-group">
+              <span data-i18n="income">Entradas</span>
+              <div class="bar-track">
+                <div id="incomeBar" class="bar income-bar"></div>
+              </div>
+            </div>
+
+            <div class="chart-group">
+              <span data-i18n="expenses">Despesas</span>
+              <div class="bar-track">
+                <div id="expenseBar" class="bar expense-bar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="transactions glass">
           <div class="transactions-top">
             <div>
               <h3 data-i18n="transactions">Transações</h3>
               <p data-i18n="latestActivity">A sua atividade financeira mais recente</p>
             </div>
+          </div>
 
-            <div class="filters">
-              <button type="button" class="filter-btn active" data-filter="all" data-i18n="filterAll">Todas</button>
-              <button type="button" class="filter-btn" data-filter="income" data-i18n="income">Entradas</button>
-              <button type="button" class="filter-btn" data-filter="expense" data-i18n="expenses">Despesas</button>
+          <div class="toolbar">
+            <input type="text" id="searchInput" class="search-input" data-i18n-placeholder="searchPlaceholder" placeholder="Pesquisar por título..." />
+
+            <div class="toolbar-row">
+              <div class="filters">
+                <button type="button" class="filter-btn active" data-filter="all" data-i18n="filterAll">Todas</button>
+                <button type="button" class="filter-btn" data-filter="income" data-i18n="income">Entradas</button>
+                <button type="button" class="filter-btn" data-filter="expense" data-i18n="expenses">Despesas</button>
+              </div>
+
+              <div class="select-wrap category-filter-wrap">
+                <select id="categoryFilter">
+                  <option value="all" data-i18n="allCategories">Todas as categorias</option>
+                  <option value="Salary" data-i18n="catSalary">Salário</option>
+                  <option value="Food" data-i18n="catFood">Comida</option>
+                  <option value="Transport" data-i18n="catTransport">Transporte</option>
+                  <option value="Shopping" data-i18n="catShopping">Compras</option>
+                  <option value="Bills" data-i18n="catBills">Contas</option>
+                  <option value="Health" data-i18n="catHealth">Saúde</option>
+                  <option value="Entertainment" data-i18n="catEntertainment">Entretenimento</option>
+                  <option value="Other" data-i18n="catOther">Outro</option>
+                </select>
+              </div>
             </div>
           </div>
 
           <div id="transactionList" class="transaction-list"></div>
         </div>
-      </div>
+      </section>
     </section>
   </main>
 
