@@ -36,12 +36,12 @@ It helps you:
 After uploading to GitHub Pages, your demo link will look like this:
 
 ```md
-https://YOUR-USERNAME.github.io/financeflow-v3/
+https://devbonifacio.github.io/Finance-Flow/
 ```
 
 Add it here when ready:
 
-**🔗 Live Demo:** `PASTE-YOUR-LINK-HERE`
+**🔗 Live Demo:** `https://devbonifacio.github.io/Finance-Flow/`
 
 ---
 
