@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finance Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
+  <div class="language-switch glass-soft">
+    <button class="lang-btn active" data-lang="pt">PT</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <main class="app">
+    <section class="hero">
+      <div class="hero-text">
+        <span class="tag" data-i18n="tag">Finance Tracker</span>
+        <h1 data-i18n="heroTitle">Controle o seu dinheiro com um dashboard moderno e premium.</h1>
+        <p data-i18n="heroText">
+          Registe entradas e despesas, acompanhe o saldo e organize melhor a sua vida financeira com um visual bonito e profissional.
+        </p>
+      </div>
+
+      <div class="hero-card glass">
+        <p class="card-label" data-i18n="currentBalance">Saldo Atual</p>
+        <h2 id="balance">€0.00</h2>
+        <div class="mini-stats">
+          <div>
+            <span data-i18n="income">Entradas</span>
+            <strong id="income">€0.00</strong>
+          </div>
+          <div>
+            <span data-i18n="expenses">Despesas</span>
+            <strong id="expense">€0.00</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dashboard">
+      <div class="left-panel glass">
+        <div class="section-header">
+          <h3 data-i18n="addTransaction">Adicionar Transação</h3>
+          <p data-i18n="registerIncomeExpense">Registe as suas entradas e despesas</p>
+        </div>
+
+        <form id="transactionForm" class="form-grid">
+          <div class="input-group">
+            <label for="title" data-i18n="titleLabel">Título</label>
+            <input type="text" id="title" data-i18n-placeholder="titlePlaceholder" placeholder="Ex: Salário, Compras, Internet" required />
+          </div>
+
+          <div class="input-group">
+            <label for="amount" data-i18n="amountLabel">Valor (€)</label>
+            <input type="number" id="amount" data-i18n-placeholder="amountPlaceholder" placeholder="Ex: 250" step="0.01" min="0.01" required />
+          </div>
+
+          <div class="input-group">
+            <label for="type" data-i18n="typeLabel">Tipo</label>
+            <div class="select-wrap">
+              <select id="type" required>
+                <option value="income" data-i18n="income">Entradas</option>
+                <option value="expense" data-i18n="expenses">Despesas</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="category" data-i18n="categoryLabel">Categoria</label>
+            <div class="select-wrap">
+              <select id="category" required>
+                <option value="Salary" data-i18n="catSalary">Salário</option>
+                <option value="Food" data-i18n="catFood">Comida</option>
+                <option value="Transport" data-i18n="catTransport">Transporte</option>
+                <option value="Shopping" data-i18n="catShopping">Compras</option>
+                <option value="Bills" data-i18n="catBills">Contas</option>
+                <option value="Health" data-i18n="catHealth">Saúde</option>
+                <option value="Entertainment" data-i18n="catEntertainment">Entretenimento</option>
+                <option value="Other" data-i18n="catOther">Outro</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group full-width">
+            <label for="date" data-i18n="dateLabel">Data</label>
+            <input type="date" id="date" required />
+          </div>
+
+          <button type="submit" class="btn-primary full-width" data-i18n="addTransactionBtn">Adicionar Transação</button>
+        </form>
+      </div>
+
+      <div class="right-panel">
+        <div class="stats-grid">
+          <article class="stat-card glass">
+            <p data-i18n="totalBalance">Saldo Total</p>
+            <h3 id="cardBalance">€0.00</h3>
+          </article>
+
+          <article class="stat-card glass">
+            <p data-i18n="totalIncome">Total de Entradas</p>
+            <h3 id="cardIncome">€0.00</h3>
+          </article>
+
+          <article class="stat-card glass">
+            <p data-i18n="totalExpenses">Total de Despesas</p>
+            <h3 id="cardExpense">€0.00</h3>
+          </article>
+        </div>
+
+        <div class="transactions glass">
+          <div class="transactions-top">
+            <div>
+              <h3 data-i18n="transactions">Transações</h3>
+              <p data-i18n="latestActivity">A sua atividade financeira mais recente</p>
+            </div>
+
+            <div class="filters">
+              <button type="button" class="filter-btn active" data-filter="all" data-i18n="filterAll">Todas</button>
+              <button type="button" class="filter-btn" data-filter="income" data-i18n="income">Entradas</button>
+              <button type="button" class="filter-btn" data-filter="expense" data-i18n="expenses">Despesas</button>
+            </div>
+          </div>
+
+          <div id="transactionList" class="transaction-list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
