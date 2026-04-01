@@ -10,13 +10,14 @@ const balanceEl = document.getElementById("balance");
 const incomeEl = document.getElementById("income");
 const expenseEl = document.getElementById("expense");
 const countEl = document.getElementById("transactionsCount");
+
 const cardBalanceEl = document.getElementById("cardBalance");
 const cardIncomeEl = document.getElementById("cardIncome");
 const cardExpenseEl = document.getElementById("cardExpense");
 
 const transactionList = document.getElementById("transactionList");
 const filterButtons = document.querySelectorAll(".filter-btn");
-const langButtons = document.querySelectorAll(".lang-btn");
+const langButtons = document.querySelectorAll("[data-lang]");
 const cancelEditBtn = document.getElementById("cancelEditBtn");
 const submitBtn = document.getElementById("submitBtn");
 const formTitle = document.getElementById("formTitle");
@@ -25,17 +26,16 @@ const categoryFilter = document.getElementById("categoryFilter");
 const exportCsvBtn = document.getElementById("exportCsvBtn");
 const themeToggle = document.getElementById("themeToggle");
 
-const overviewCtx = document.getElementById("overviewChart");
-const categoryCtx = document.getElementById("categoryChart");
+const overviewCanvas = document.getElementById("overviewChart");
+const categoryCanvas = document.getElementById("categoryChart");
 
 const translations = {
   pt: {
-    pageTitle: "FinanceFlow V3",
     brandSubtitle: "Premium Finance Dashboard",
-    tag: "Finance Tracker Premium",
-    heroTitle: "Controle o seu dinheiro com um dashboard moderno, bonito e inteligente.",
-    heroText: "Registe entradas e despesas, acompanhe gráficos, filtre transações, exporte CSV e organize tudo com uma interface premium.",
-    heroPrimary: "Começar agora",
+    heroBadge: "Finance Tracker Premium",
+    heroTitle: "Controle o seu dinheiro com um dashboard bonito, moderno e profissional.",
+    heroText: "Adicione entradas e despesas, acompanhe gráficos em tempo real, filtre transações e exporte os seus dados com uma experiência premium.",
+    heroPrimary: "Começar",
     heroSecondary: "Ver transações",
     currentBalance: "Saldo Atual",
     income: "Entradas",
@@ -43,11 +43,11 @@ const translations = {
     transactionsCount: "Transações",
     addTransaction: "Adicionar Transação",
     editTransaction: "Editar Transação",
-    registerIncomeExpense: "Registe entradas e despesas de forma rápida",
+    formText: "Preencha os campos para registar uma transação.",
+    smartForm: "Formulário",
+    liveList: "Lista",
     titleLabel: "Título",
-    titlePlaceholder: "Ex: Salário, Compras, Internet",
     amountLabel: "Valor (€)",
-    amountPlaceholder: "Ex: 250",
     dateLabel: "Data",
     typeLabel: "Tipo",
     categoryLabel: "Categoria",
@@ -63,11 +63,8 @@ const translations = {
     categoryChartText: "Distribuição das despesas por categoria",
     transactions: "Transações",
     latestActivity: "A sua atividade financeira mais recente",
-    smartForm: "Formulário",
-    liveList: "Lista",
     filterAll: "Todas",
     allCategories: "Todas as categorias",
-    searchPlaceholder: "Pesquisar por título...",
     catSalary: "Salário",
     catFood: "Comida",
     catTransport: "Transporte",
@@ -76,25 +73,26 @@ const translations = {
     catHealth: "Saúde",
     catEntertainment: "Entretenimento",
     catOther: "Outro",
+    edit: "Editar",
+    delete: "Apagar",
     badgeIncome: "Entrada",
     badgeExpense: "Despesa",
-    delete: "Apagar",
-    edit: "Editar",
     emptyState: "Ainda não existem transações com esse filtro.",
     invalidForm: "Preenche todos os campos corretamente.",
-    csvName: "financeflow-transacoes.csv",
-    exportCsv: "⬇️ CSV",
+    titlePlaceholder: "Ex: Salário, Compras, Internet",
+    amountPlaceholder: "Ex: 250",
+    searchPlaceholder: "Pesquisar por título...",
+    csvName: "financeflow-pro-transacoes.csv",
     chartIncome: "Entradas",
     chartExpense: "Despesas",
-    noExpenseData: "Sem despesas",
+    noExpenseData: "Sem despesas"
   },
   en: {
-    pageTitle: "FinanceFlow V3",
     brandSubtitle: "Premium Finance Dashboard",
-    tag: "Finance Tracker Premium",
-    heroTitle: "Control your money with a modern, beautiful and smart dashboard.",
-    heroText: "Track income and expenses, visualize charts, filter transactions, export CSV and organize everything with a premium interface.",
-    heroPrimary: "Start now",
+    heroBadge: "Finance Tracker Premium",
+    heroTitle: "Control your money with a beautiful, modern and professional dashboard.",
+    heroText: "Add income and expenses, track charts in real time, filter transactions and export your data with a premium experience.",
+    heroPrimary: "Start",
     heroSecondary: "View transactions",
     currentBalance: "Current Balance",
     income: "Income",
@@ -102,11 +100,11 @@ const translations = {
     transactionsCount: "Transactions",
     addTransaction: "Add Transaction",
     editTransaction: "Edit Transaction",
-    registerIncomeExpense: "Register income and expenses quickly",
+    formText: "Fill in the fields to register a transaction.",
+    smartForm: "Form",
+    liveList: "List",
     titleLabel: "Title",
-    titlePlaceholder: "Ex: Salary, Groceries, Internet",
     amountLabel: "Amount (€)",
-    amountPlaceholder: "Ex: 250",
     dateLabel: "Date",
     typeLabel: "Type",
     categoryLabel: "Category",
@@ -122,11 +120,8 @@ const translations = {
     categoryChartText: "Expense distribution by category",
     transactions: "Transactions",
     latestActivity: "Your latest financial activity",
-    smartForm: "Form",
-    liveList: "List",
     filterAll: "All",
     allCategories: "All categories",
-    searchPlaceholder: "Search by title...",
     catSalary: "Salary",
     catFood: "Food",
     catTransport: "Transport",
@@ -135,48 +130,41 @@ const translations = {
     catHealth: "Health",
     catEntertainment: "Entertainment",
     catOther: "Other",
+    edit: "Edit",
+    delete: "Delete",
     badgeIncome: "Income",
     badgeExpense: "Expense",
-    delete: "Delete",
-    edit: "Edit",
     emptyState: "No transactions found for this filter.",
     invalidForm: "Please fill in all fields correctly.",
-    csvName: "financeflow-transactions.csv",
-    exportCsv: "⬇️ CSV",
+    titlePlaceholder: "Ex: Salary, Groceries, Internet",
+    amountPlaceholder: "Ex: 250",
+    searchPlaceholder: "Search by title...",
+    csvName: "financeflow-pro-transactions.csv",
     chartIncome: "Income",
     chartExpense: "Expenses",
-    noExpenseData: "No expenses",
+    noExpenseData: "No expenses"
   }
 };
 
-let transactions = JSON.parse(localStorage.getItem("financeFlowV3Transactions")) || [];
+let transactions = JSON.parse(localStorage.getItem("financeFlowProTransactions")) || [];
 let currentFilter = "all";
-let currentLang = localStorage.getItem("financeFlowV3Language") || "pt";
-let currentTheme = localStorage.getItem("financeFlowV3Theme") || "dark";
-let overviewChart;
-let categoryChart;
+let currentLang = localStorage.getItem("financeFlowProLanguage") || "pt";
+let currentTheme = localStorage.getItem("financeFlowProTheme") || "dark";
+let overviewChart = null;
+let categoryChart = null;
 
 dateInput.valueAsDate = new Date();
 
-function getThemeColors() {
-  const isLight = currentTheme === "light";
-  return {
-    text: isLight ? "#0f172a" : "#f8fafc",
-    muted: isLight ? "#64748b" : "#94a3b8",
-    grid: isLight ? "rgba(15,23,42,0.08)" : "rgba(255,255,255,0.08)",
-    income: "#22c55e",
-    expense: "#ef4444",
-    purple: "#7c3aed",
-    palette: ["#7c3aed", "#22c55e", "#ef4444", "#f59e0b", "#06b6d4", "#ec4899", "#6366f1"],
-  };
+function t(key) {
+  return translations[currentLang][key] || key;
 }
 
-function getCurrencyLocale() {
+function getLocale() {
   return currentLang === "pt" ? "pt-PT" : "en-IE";
 }
 
 function formatCurrency(value) {
-  return new Intl.NumberFormat(getCurrencyLocale(), {
+  return new Intl.NumberFormat(getLocale(), {
     style: "currency",
     currency: "EUR"
   }).format(value);
@@ -187,17 +175,17 @@ function formatDate(dateString) {
   return new Date(dateString + "T00:00:00").toLocaleDateString(locale);
 }
 
+function saveTransactions() {
+  localStorage.setItem("financeFlowProTransactions", JSON.stringify(transactions));
+}
+
 function escapeHTML(text) {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
 }
 
-function saveTransactions() {
-  localStorage.setItem("financeFlowV3Transactions", JSON.stringify(transactions));
-}
-
-function getTranslatedCategory(category) {
+function translatedCategory(category) {
   const map = {
     Salary: "catSalary",
     Food: "catFood",
@@ -206,31 +194,24 @@ function getTranslatedCategory(category) {
     Bills: "catBills",
     Health: "catHealth",
     Entertainment: "catEntertainment",
-    Other: "catOther",
+    Other: "catOther"
   };
-  return translations[currentLang][map[category] || "catOther"];
+  return t(map[category] || "catOther");
 }
 
-function getSummaryValues() {
-  const income = transactions
-    .filter(item => item.type === "income")
-    .reduce((sum, item) => sum + item.amount, 0);
-
-  const expense = transactions
-    .filter(item => item.type === "expense")
-    .reduce((sum, item) => sum + item.amount, 0);
-
+function getSummary() {
+  const income = transactions.filter(item => item.type === "income").reduce((sum, item) => sum + item.amount, 0);
+  const expense = transactions.filter(item => item.type === "expense").reduce((sum, item) => sum + item.amount, 0);
   return {
     income,
     expense,
     balance: income - expense,
-    count: transactions.length,
+    count: transactions.length
   };
 }
 
 function updateSummary() {
-  const { income, expense, balance, count } = getSummaryValues();
-
+  const { income, expense, balance, count } = getSummary();
   balanceEl.textContent = formatCurrency(balance);
   incomeEl.textContent = formatCurrency(income);
   expenseEl.textContent = formatCurrency(expense);
@@ -240,95 +221,87 @@ function updateSummary() {
   cardIncomeEl.textContent = formatCurrency(income);
   cardExpenseEl.textContent = formatCurrency(expense);
 
-  updateCharts();
+  renderCharts();
 }
 
-function getFilteredTransactions() {
-  const searchValue = searchInput.value.trim().toLowerCase();
-  const categoryValue = categoryFilter.value;
+function filteredTransactions() {
+  const search = searchInput.value.trim().toLowerCase();
+  const category = categoryFilter.value;
 
-  return transactions.filter(transaction => {
-    const typeMatch = currentFilter === "all" || transaction.type === currentFilter;
-    const categoryMatch = categoryValue === "all" || transaction.category === categoryValue;
-    const searchMatch = transaction.title.toLowerCase().includes(searchValue);
-
-    return typeMatch && categoryMatch && searchMatch;
+  return transactions.filter(item => {
+    const byType = currentFilter === "all" || item.type === currentFilter;
+    const byCategory = category === "all" || item.category === category;
+    const bySearch = item.title.toLowerCase().includes(search);
+    return byType && byCategory && bySearch;
   });
 }
 
 function renderTransactions() {
-  transactionList.innerHTML = "";
-  const filteredTransactions = getFilteredTransactions();
+  const list = filteredTransactions()
+    .slice()
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  if (filteredTransactions.length === 0) {
-    transactionList.innerHTML = `
-      <div class="empty-state">
-        <p>${translations[currentLang].emptyState}</p>
-      </div>
-    `;
+  transactionList.innerHTML = "";
+
+  if (list.length === 0) {
+    transactionList.innerHTML = `<div class="empty-state"><p>${t("emptyState")}</p></div>`;
     return;
   }
 
-  filteredTransactions
-    .slice()
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .forEach(transaction => {
-      const item = document.createElement("article");
-      item.className = "transaction-item";
+  for (const item of list) {
+    const article = document.createElement("article");
+    article.className = "transaction-item";
 
-      const typeLabel = transaction.type === "income"
-        ? translations[currentLang].badgeIncome
-        : translations[currentLang].badgeExpense;
+    const badgeText = item.type === "income" ? t("badgeIncome") : t("badgeExpense");
 
-      item.innerHTML = `
-        <div class="transaction-main">
-          <h4>${escapeHTML(transaction.title)}</h4>
-          <div class="transaction-meta">
-            <span>${getTranslatedCategory(transaction.category)}</span>
-            <span>•</span>
-            <span>${formatDate(transaction.date)}</span>
-            <span class="badge ${transaction.type === "income" ? "badge-income" : "badge-expense"}">${typeLabel}</span>
-          </div>
+    article.innerHTML = `
+      <div class="transaction-main">
+        <h4>${escapeHTML(item.title)}</h4>
+        <div class="transaction-meta">
+          <span>${translatedCategory(item.category)}</span>
+          <span>•</span>
+          <span>${formatDate(item.date)}</span>
+          <span class="tx-badge ${item.type}">${badgeText}</span>
         </div>
+      </div>
 
-        <div class="transaction-amount ${transaction.type === "income" ? "amount-income" : "amount-expense"}">
-          ${transaction.type === "income" ? "+" : "-"}${formatCurrency(transaction.amount)}
-        </div>
+      <div class="transaction-amount ${item.type}">
+        ${item.type === "income" ? "+" : "-"}${formatCurrency(item.amount)}
+      </div>
 
-        <div class="action-group">
-          <button class="edit-btn" data-action="edit" data-id="${transaction.id}">${translations[currentLang].edit}</button>
-          <button class="delete-btn" data-action="delete" data-id="${transaction.id}">${translations[currentLang].delete}</button>
-        </div>
-      `;
+      <div class="action-group">
+        <button type="button" class="edit-btn" data-action="edit" data-id="${item.id}">${t("edit")}</button>
+        <button type="button" class="delete-btn" data-action="delete" data-id="${item.id}">${t("delete")}</button>
+      </div>
+    `;
 
-      transactionList.appendChild(item);
-    });
+    transactionList.appendChild(article);
+  }
 }
 
-function resetFormState() {
-  editIdInput.value = "";
+function resetForm() {
   form.reset();
+  editIdInput.value = "";
   dateInput.valueAsDate = new Date();
-  formTitle.textContent = translations[currentLang].addTransaction;
-  submitBtn.textContent = translations[currentLang].addTransactionBtn;
-  cancelEditBtn.style.display = "none";
+  formTitle.textContent = t("addTransaction");
+  submitBtn.textContent = t("addTransactionBtn");
+  cancelEditBtn.classList.add("hidden");
 }
 
-function fillFormForEdit(transaction) {
+function fillForm(transaction) {
   editIdInput.value = transaction.id;
   titleInput.value = transaction.title;
   amountInput.value = transaction.amount;
   typeInput.value = transaction.type;
   categoryInput.value = transaction.category;
   dateInput.value = transaction.date;
-
-  formTitle.textContent = translations[currentLang].editTransaction;
-  submitBtn.textContent = translations[currentLang].saveChangesBtn;
-  cancelEditBtn.style.display = "inline-flex";
+  formTitle.textContent = t("editTransaction");
+  submitBtn.textContent = t("saveChangesBtn");
+  cancelEditBtn.classList.remove("hidden");
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function addOrUpdateTransaction(event) {
+function handleSubmit(event) {
   event.preventDefault();
 
   const title = titleInput.value.trim();
@@ -339,7 +312,7 @@ function addOrUpdateTransaction(event) {
   const editId = editIdInput.value;
 
   if (!title || !amount || amount <= 0 || !date) {
-    alert(translations[currentLang].invalidForm);
+    alert(t("invalidForm"));
     return;
   }
 
@@ -354,14 +327,14 @@ function addOrUpdateTransaction(event) {
       amount,
       type,
       category,
-      date,
+      date
     });
   }
 
   saveTransactions();
   updateSummary();
   renderTransactions();
-  resetFormState();
+  resetForm();
 }
 
 function deleteTransaction(id) {
@@ -369,14 +342,11 @@ function deleteTransaction(id) {
   saveTransactions();
   updateSummary();
   renderTransactions();
-
-  if (editIdInput.value === id) {
-    resetFormState();
-  }
+  if (editIdInput.value === id) resetForm();
 }
 
-function exportToCSV() {
-  if (transactions.length === 0) return;
+function exportCSV() {
+  if (!transactions.length) return;
 
   const rows = [
     ["Title", "Amount", "Type", "Category", "Date"],
@@ -389,90 +359,48 @@ function exportToCSV() {
 
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
+
   const link = document.createElement("a");
   link.href = url;
-  link.download = translations[currentLang].csvName;
+  link.download = t("csvName");
   link.click();
+
   URL.revokeObjectURL(url);
 }
 
-function applyTheme() {
-  document.body.classList.toggle("light", currentTheme === "light");
-  themeToggle.textContent = currentTheme === "light" ? "☀️" : "🌙";
-  if (overviewChart || categoryChart) updateCharts();
+function chartColors() {
+  const light = currentTheme === "light";
+  return {
+    text: light ? "#0f172a" : "#f8fafc",
+    muted: light ? "#64748b" : "#94a3b8",
+    grid: light ? "rgba(15,23,42,0.08)" : "rgba(255,255,255,0.08)",
+    palette: ["#7c3aed", "#22c55e", "#ef4444", "#f59e0b", "#06b6d4", "#ec4899", "#6366f1"]
+  };
 }
 
-function toggleTheme() {
-  currentTheme = currentTheme === "dark" ? "light" : "dark";
-  localStorage.setItem("financeFlowV3Theme", currentTheme);
-  applyTheme();
-}
+function renderCharts() {
+  if (typeof Chart === "undefined") return;
 
-function updateStaticTexts() {
-  document.documentElement.lang = currentLang;
-  document.title = translations[currentLang].pageTitle;
-  exportCsvBtn.textContent = translations[currentLang].exportCsv;
-
-  document.querySelectorAll("[data-i18n]").forEach(element => {
-    const key = element.dataset.i18n;
-    if (translations[currentLang][key]) {
-      element.textContent = translations[currentLang][key];
-    }
-  });
-
-  document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
-    const key = element.dataset.i18nPlaceholder;
-    if (translations[currentLang][key]) {
-      element.placeholder = translations[currentLang][key];
-    }
-  });
-
-  langButtons.forEach(button => {
-    button.classList.toggle("active", button.dataset.lang === currentLang);
-  });
-
-  filterButtons.forEach(button => {
-    button.classList.toggle("active", button.dataset.filter === currentFilter);
-  });
-
-  if (editIdInput.value) {
-    formTitle.textContent = translations[currentLang].editTransaction;
-    submitBtn.textContent = translations[currentLang].saveChangesBtn;
-    cancelEditBtn.style.display = "inline-flex";
-  } else {
-    formTitle.textContent = translations[currentLang].addTransaction;
-    submitBtn.textContent = translations[currentLang].addTransactionBtn;
-    cancelEditBtn.style.display = "none";
-  }
-}
-
-function setLanguage(lang) {
-  currentLang = lang;
-  localStorage.setItem("financeFlowV3Language", lang);
-  updateStaticTexts();
-  updateSummary();
-  renderTransactions();
-}
-
-function buildOverviewChart() {
-  const colors = getThemeColors();
-  const { income, expense } = getSummaryValues();
+  const colors = chartColors();
+  const { income, expense } = getSummary();
 
   if (overviewChart) overviewChart.destroy();
-  overviewChart = new Chart(overviewCtx, {
+  if (categoryChart) categoryChart.destroy();
+
+  overviewChart = new Chart(overviewCanvas, {
     type: "bar",
     data: {
-      labels: [translations[currentLang].chartIncome, translations[currentLang].chartExpense],
+      labels: [t("chartIncome"), t("chartExpense")],
       datasets: [{
         data: [income, expense],
-        backgroundColor: [colors.income, colors.expense],
+        backgroundColor: ["#22c55e", "#ef4444"],
         borderRadius: 14,
-        borderSkipped: false,
+        borderSkipped: false
       }]
     },
     options: {
-      responsive: true,
       maintainAspectRatio: false,
+      responsive: true,
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -496,43 +424,38 @@ function buildOverviewChart() {
       }
     }
   });
-}
 
-function buildCategoryChart() {
-  const colors = getThemeColors();
   const expenseItems = transactions.filter(item => item.type === "expense");
   const totals = {};
-
-  expenseItems.forEach(item => {
+  for (const item of expenseItems) {
     totals[item.category] = (totals[item.category] || 0) + item.amount;
-  });
+  }
 
   const labels = Object.keys(totals);
   const values = Object.values(totals);
 
-  if (categoryChart) categoryChart.destroy();
-  categoryChart = new Chart(categoryCtx, {
+  categoryChart = new Chart(categoryCanvas, {
     type: "doughnut",
     data: {
-      labels: labels.length ? labels.map(getTranslatedCategory) : [translations[currentLang].noExpenseData],
+      labels: labels.length ? labels.map(translatedCategory) : [t("noExpenseData")],
       datasets: [{
         data: values.length ? values : [1],
         backgroundColor: values.length ? colors.palette : [colors.grid],
         borderWidth: 0,
-        hoverOffset: 8,
+        hoverOffset: 8
       }]
     },
     options: {
-      responsive: true,
       maintainAspectRatio: false,
+      responsive: true,
       cutout: "68%",
       plugins: {
         legend: {
           position: "bottom",
           labels: {
             color: colors.muted,
-            usePointStyle: true,
             padding: 18,
+            usePointStyle: true,
             font: { weight: "700" }
           }
         },
@@ -546,22 +469,68 @@ function buildCategoryChart() {
   });
 }
 
-function updateCharts() {
-  buildOverviewChart();
-  buildCategoryChart();
+function applyTheme() {
+  document.body.classList.toggle("light", currentTheme === "light");
+  themeToggle.textContent = currentTheme === "light" ? "☀️" : "🌙";
+  renderCharts();
 }
 
-filterButtons.forEach(button => {
-  button.addEventListener("click", () => {
-    currentFilter = button.dataset.filter;
+function toggleTheme() {
+  currentTheme = currentTheme === "dark" ? "light" : "dark";
+  localStorage.setItem("financeFlowProTheme", currentTheme);
+  applyTheme();
+}
+
+function updateStaticTexts() {
+  document.documentElement.lang = currentLang === "pt" ? "pt-PT" : "en";
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.dataset.i18n;
+    el.textContent = t(key);
+  });
+
+  titleInput.placeholder = t("titlePlaceholder");
+  amountInput.placeholder = t("amountPlaceholder");
+  searchInput.placeholder = t("searchPlaceholder");
+
+  langButtons.forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.lang === currentLang);
+  });
+
+  filterButtons.forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.filter === currentFilter);
+  });
+
+  if (editIdInput.value) {
+    formTitle.textContent = t("editTransaction");
+    submitBtn.textContent = t("saveChangesBtn");
+    cancelEditBtn.classList.remove("hidden");
+  } else {
+    formTitle.textContent = t("addTransaction");
+    submitBtn.textContent = t("addTransactionBtn");
+    cancelEditBtn.classList.add("hidden");
+  }
+}
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem("financeFlowProLanguage", lang);
+  updateStaticTexts();
+  updateSummary();
+  renderTransactions();
+}
+
+filterButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    currentFilter = btn.dataset.filter;
     updateStaticTexts();
     renderTransactions();
   });
 });
 
-langButtons.forEach(button => {
-  button.addEventListener("click", () => {
-    setLanguage(button.dataset.lang);
+langButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    setLanguage(btn.dataset.lang);
   });
 });
 
@@ -571,20 +540,20 @@ categoryFilter.addEventListener("change", renderTransactions);
 transactionList.addEventListener("click", event => {
   const button = event.target.closest("button");
   if (!button) return;
-
-  const { action, id } = button.dataset;
+  const id = button.dataset.id;
+  const action = button.dataset.action;
 
   if (action === "delete") deleteTransaction(id);
   if (action === "edit") {
     const transaction = transactions.find(item => item.id === id);
-    if (transaction) fillFormForEdit(transaction);
+    if (transaction) fillForm(transaction);
   }
 });
 
-cancelEditBtn.addEventListener("click", resetFormState);
-form.addEventListener("submit", addOrUpdateTransaction);
-exportCsvBtn.addEventListener("click", exportToCSV);
+form.addEventListener("submit", handleSubmit);
+cancelEditBtn.addEventListener("click", resetForm);
 themeToggle.addEventListener("click", toggleTheme);
+exportCsvBtn.addEventListener("click", exportCSV);
 
 applyTheme();
 updateStaticTexts();

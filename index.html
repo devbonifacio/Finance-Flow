@@ -1,111 +1,101 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FinanceFlow V3</title>
-  <meta name="description" content="FinanceFlow V3 - premium finance tracker with charts, filters, export, PT/EN and dark mode." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <title>FinanceFlow Pro</title>
+  <meta name="description" content="FinanceFlow Pro - gestor financeiro premium com gráficos, filtros, exportação CSV, tema escuro/claro e idioma PT/EN." />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="bg-orb orb-1"></div>
-  <div class="bg-orb orb-2"></div>
-  <div class="grid-overlay"></div>
+  <div class="bg bg-1"></div>
+  <div class="bg bg-2"></div>
 
-  <header class="topbar glass-soft">
+  <header class="topbar shell card">
     <div class="brand">
-      <div class="brand-mark">
-        <span></span>
-      </div>
+      <div class="brand-logo">F</div>
       <div>
-        <strong>FinanceFlow V3</strong>
-        <small data-i18n="brandSubtitle">Premium Finance Dashboard</small>
+        <h1>FinanceFlow Pro</h1>
+        <p data-i18n="brandSubtitle">Premium Finance Dashboard</p>
       </div>
     </div>
 
     <div class="topbar-actions">
-      <div class="language-switch">
-        <button class="lang-btn active" data-lang="pt">PT</button>
-        <button class="lang-btn" data-lang="en">EN</button>
+      <div class="segmented">
+        <button type="button" class="segmented-btn active" data-lang="pt">PT</button>
+        <button type="button" class="segmented-btn" data-lang="en">EN</button>
       </div>
 
-      <button id="themeToggle" class="icon-btn" title="Toggle theme">🌙</button>
-      <button id="exportCsvBtn" class="icon-btn export-btn">⬇️ CSV</button>
+      <button type="button" class="icon-btn" id="themeToggle" aria-label="Toggle theme">🌙</button>
+      <button type="button" class="primary-btn small-btn" id="exportCsvBtn">CSV</button>
     </div>
   </header>
 
-  <main class="app">
+  <main class="shell">
     <section class="hero">
       <div class="hero-copy">
-        <span class="pill" data-i18n="tag">Finance Tracker Premium</span>
-        <h1 data-i18n="heroTitle">Controle o seu dinheiro com um dashboard moderno, bonito e inteligente.</h1>
-        <p data-i18n="heroText">
-          Registe entradas e despesas, acompanhe gráficos, filtre transações, exporte CSV e organize tudo com uma interface premium.
-        </p>
+        <span class="badge" data-i18n="heroBadge">Finance Tracker Premium</span>
+        <h2 data-i18n="heroTitle">Controle o seu dinheiro com um dashboard bonito, moderno e profissional.</h2>
+        <p data-i18n="heroText">Adicione entradas e despesas, acompanhe gráficos em tempo real, filtre transações e exporte os seus dados com uma experiência premium.</p>
 
         <div class="hero-actions">
-          <a href="#formSection" class="hero-btn primary" data-i18n="heroPrimary">Começar agora</a>
-          <a href="#transactionsSection" class="hero-btn secondary" data-i18n="heroSecondary">Ver transações</a>
+          <a href="#formSection" class="primary-btn" data-i18n="heroPrimary">Começar</a>
+          <a href="#transactionsSection" class="secondary-btn" data-i18n="heroSecondary">Ver transações</a>
         </div>
       </div>
 
-      <div class="hero-summary glass">
-        <div class="summary-top">
-          <p data-i18n="currentBalance">Saldo Atual</p>
-          <h2 id="balance">€0.00</h2>
+      <aside class="summary card">
+        <div class="summary-head">
+          <span data-i18n="currentBalance">Saldo Atual</span>
+          <strong id="balance">€0.00</strong>
         </div>
 
         <div class="summary-grid">
-          <article class="summary-card">
+          <article>
             <span data-i18n="income">Entradas</span>
             <strong id="income">€0.00</strong>
           </article>
-
-          <article class="summary-card">
+          <article>
             <span data-i18n="expenses">Despesas</span>
             <strong id="expense">€0.00</strong>
           </article>
-
-          <article class="summary-card">
+          <article>
             <span data-i18n="transactionsCount">Transações</span>
             <strong id="transactionsCount">0</strong>
           </article>
         </div>
-      </div>
+      </aside>
     </section>
 
-    <section class="content-grid">
-      <aside id="formSection" class="panel glass form-panel">
+    <section class="dashboard">
+      <section id="formSection" class="card panel">
         <div class="panel-head">
           <div>
             <h3 id="formTitle" data-i18n="addTransaction">Adicionar Transação</h3>
-            <p data-i18n="registerIncomeExpense">Registe entradas e despesas de forma rápida</p>
+            <p data-i18n="formText">Preencha os campos para registar uma transação.</p>
           </div>
-          <div class="panel-badge" data-i18n="smartForm">Formulário</div>
+          <span class="panel-pill" data-i18n="smartForm">Formulário</span>
         </div>
 
         <form id="transactionForm" class="form-grid">
           <input type="hidden" id="editId" />
 
-          <div class="input-group full-width">
+          <div class="field field-full">
             <label for="title" data-i18n="titleLabel">Título</label>
-            <input type="text" id="title" data-i18n-placeholder="titlePlaceholder" placeholder="Ex: Salário, Compras, Internet" required />
+            <input type="text" id="title" placeholder="Ex: Salário, Compras, Internet" required />
           </div>
 
-          <div class="input-group">
+          <div class="field">
             <label for="amount" data-i18n="amountLabel">Valor (€)</label>
-            <input type="number" id="amount" step="0.01" min="0.01" data-i18n-placeholder="amountPlaceholder" placeholder="Ex: 250" required />
+            <input type="number" id="amount" min="0.01" step="0.01" placeholder="Ex: 250" required />
           </div>
 
-          <div class="input-group">
+          <div class="field">
             <label for="date" data-i18n="dateLabel">Data</label>
             <input type="date" id="date" required />
           </div>
 
-          <div class="input-group">
+          <div class="field">
             <label for="type" data-i18n="typeLabel">Tipo</label>
             <div class="select-wrap">
               <select id="type" required>
@@ -115,7 +105,7 @@
             </div>
           </div>
 
-          <div class="input-group">
+          <div class="field">
             <label for="category" data-i18n="categoryLabel">Categoria</label>
             <div class="select-wrap">
               <select id="category" required>
@@ -131,68 +121,66 @@
             </div>
           </div>
 
-          <div class="form-actions full-width">
-            <button type="submit" class="btn-primary" id="submitBtn" data-i18n="addTransactionBtn">Adicionar Transação</button>
-            <button type="button" class="btn-secondary" id="cancelEditBtn" data-i18n="cancel">Cancelar</button>
+          <div class="form-actions field-full">
+            <button type="submit" class="primary-btn" id="submitBtn" data-i18n="addTransactionBtn">Adicionar Transação</button>
+            <button type="button" class="secondary-btn hidden" id="cancelEditBtn" data-i18n="cancel">Cancelar</button>
           </div>
         </form>
-      </aside>
+      </section>
 
-      <section class="right-stack">
-        <div class="stats-row">
-          <article class="stat-card glass">
+      <section class="content-column">
+        <div class="stats-grid">
+          <article class="card stat-card">
             <span data-i18n="totalBalance">Saldo Total</span>
-            <h3 id="cardBalance">€0.00</h3>
+            <strong id="cardBalance">€0.00</strong>
           </article>
-
-          <article class="stat-card glass">
+          <article class="card stat-card">
             <span data-i18n="totalIncome">Total de Entradas</span>
-            <h3 id="cardIncome">€0.00</h3>
+            <strong id="cardIncome">€0.00</strong>
           </article>
-
-          <article class="stat-card glass">
+          <article class="card stat-card">
             <span data-i18n="totalExpenses">Total de Despesas</span>
-            <h3 id="cardExpense">€0.00</h3>
+            <strong id="cardExpense">€0.00</strong>
           </article>
         </div>
 
-        <div class="chart-grid">
-          <article class="panel glass chart-panel">
+        <div class="charts-grid">
+          <article class="card panel">
             <div class="panel-head">
               <div>
                 <h3 data-i18n="overviewChart">Resumo Geral</h3>
                 <p data-i18n="overviewChartText">Comparação entre entradas e despesas</p>
               </div>
             </div>
-            <div class="chart-wrap">
+            <div class="canvas-wrap">
               <canvas id="overviewChart"></canvas>
             </div>
           </article>
 
-          <article class="panel glass chart-panel">
+          <article class="card panel">
             <div class="panel-head">
               <div>
                 <h3 data-i18n="categoryChart">Categorias</h3>
                 <p data-i18n="categoryChartText">Distribuição das despesas por categoria</p>
               </div>
             </div>
-            <div class="chart-wrap">
+            <div class="canvas-wrap">
               <canvas id="categoryChart"></canvas>
             </div>
           </article>
         </div>
 
-        <section id="transactionsSection" class="panel glass transactions-panel">
-          <div class="panel-head transactions-head">
+        <section id="transactionsSection" class="card panel">
+          <div class="panel-head">
             <div>
               <h3 data-i18n="transactions">Transações</h3>
               <p data-i18n="latestActivity">A sua atividade financeira mais recente</p>
             </div>
-            <div class="panel-badge" data-i18n="liveList">Lista</div>
+            <span class="panel-pill" data-i18n="liveList">Lista</span>
           </div>
 
           <div class="toolbar">
-            <input type="text" id="searchInput" class="search-input" data-i18n-placeholder="searchPlaceholder" placeholder="Pesquisar por título..." />
+            <input type="text" id="searchInput" class="search-input" placeholder="Pesquisar por título..." />
 
             <div class="toolbar-row">
               <div class="filters">
@@ -201,7 +189,7 @@
                 <button type="button" class="filter-btn" data-filter="expense" data-i18n="expenses">Despesas</button>
               </div>
 
-              <div class="select-wrap category-filter-wrap">
+              <div class="select-wrap category-filter">
                 <select id="categoryFilter">
                   <option value="all" data-i18n="allCategories">Todas as categorias</option>
                   <option value="Salary" data-i18n="catSalary">Salário</option>

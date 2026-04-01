@@ -1,82 +1,85 @@
-# ✨ FinanceFlow V3
+# ✨ FinanceFlow Pro
 
 <div align="center">
 
-### A premium personal finance tracker with a modern dashboard, charts, filters and polished UI
+### Premium finance tracker with a polished dashboard, charts, filters, PT/EN support and dark mode
 
 <br>
 
 ![HTML5](https://img.shields.io/badge/HTML5-Structure-orange?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-Styling-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-Logic-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Chart.js](https://img.shields.io/badge/Chart.js-Graphs-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)
 ![Responsive](https://img.shields.io/badge/Responsive-Yes-22C55E?style=for-the-badge)
-![LocalStorage](https://img.shields.io/badge/Storage-localStorage-7C3AED?style=for-the-badge)
+![LocalStorage](https://img.shields.io/badge/localStorage-Persistent-7C3AED?style=for-the-badge)
 
 </div>
 
 ---
 
-## 🚀 Overview
+## 🚀 About the project
 
-**FinanceFlow V3** is a beautiful finance tracker built to look and feel like a real startup dashboard.
+**FinanceFlow Pro** is a portfolio-ready finance dashboard built to look clean, modern and professional.
 
-It helps you:
-- add and manage income / expense transactions
-- visualize your finances with charts
-- search and filter transactions
+It allows you to:
+- add income and expense transactions
+- edit and delete entries
+- visualize finances with charts
+- filter by type and category
+- search transactions by title
 - export data to CSV
-- switch language between **Português** and **English**
+- switch between **Português** and **English**
 - toggle **dark / light mode**
-- keep everything saved with **localStorage**
+- keep data saved with **localStorage**
 
 ---
 
 ## 🌐 Live Demo
 
-After uploading to GitHub Pages, your demo link will look like this:
+After publishing with GitHub Pages, your link will look like this:
 
 ```md
 https://devbonifacio.github.io/Finance-Flow/
 ```
 
-Add it here when ready:
+
 
 **🔗 Live Demo:** `https://devbonifacio.github.io/Finance-Flow/`
 
 ---
 
-## 🧠 Main Features
+## 🧠 Features
 
 ### 💸 Finance management
-- Add transactions
+- Add new transactions
 - Edit transactions
 - Delete transactions
 - Automatic balance calculation
-- Income / expense totals
+- Income and expense totals
 
-### 📊 Dashboard & charts
+### 📊 Charts
 - Overview bar chart
 - Expense category doughnut chart
-- Real-time updates
+- Real-time chart updates
 
-### 🔎 Productivity tools
+### 🔎 Productivity
 - Search by title
-- Filter by transaction type
+- Filter by type
 - Filter by category
-- Export CSV file
+- Export CSV
 
-### 🌍 UX improvements
+### 🌍 User experience
 - PT / EN language switch
 - Dark / light mode
-- Premium responsive UI
-- Smooth layout for desktop and mobile
+- Responsive layout
+- Premium modern UI
 
 ---
 
-## 📁 Project Structure
+## 📁 Project structure
 
 ```bash
-financeflow-v3/
+financeflow-pro/
 ├── index.html
 ├── style.css
 ├── script.js
@@ -85,7 +88,7 @@ financeflow-v3/
 
 ---
 
-## 🛠️ Technologies Used
+## 🛠️ Technologies
 
 - **HTML5**
 - **CSS3**
@@ -95,26 +98,26 @@ financeflow-v3/
 
 ---
 
-## ▶️ How to Run
+## ▶️ How to run
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/YOUR-USERNAME/financeflow-v3.git
+git clone https://github.com/YOUR-USERNAME/financeflow-pro.git
 ```
 
-### 2. Open the project folder
+### 2. Enter the folder
 ```bash
-cd financeflow-v3
+cd financeflow-pro
 ```
 
-### 3. Run the app
+### 3. Open the app
 Open `index.html` in your browser.
 
 ---
 
 ## 📸 Preview
 
-Take a screenshot of the project and save it inside your repository as:
+Take a screenshot of the final project and save it inside the repository as:
 
 ```bash
 preview.png
@@ -123,31 +126,30 @@ preview.png
 Then replace this section with:
 
 ```md
-![FinanceFlow Preview](preview.png)
+![FinanceFlow Pro Preview](preview.png)
 ```
 
 ---
 
-## 💡 Future Improvements
+## 💡 Future improvements
 
-- Monthly analytics
-- Budget goals
+- Monthly budgets
 - Recurring transactions
 - Authentication
-- Backend integration
 - Cloud sync
-- More advanced reports
+- Advanced analytics
+- Backend integration
 
 ---
 
-## 🧾 Suggested Commits
+## 🧾 Suggested commits
 
 ```bash
-feat: build financeflow v3 premium dashboard
-feat: add charts and transaction filters
-feat: implement dark mode and language switch
-feat: add csv export and edit transaction flow
-docs: create premium project README
+feat: build financeflow pro premium dashboard
+feat: add charts, filters and transaction editing
+feat: implement csv export and dark mode
+feat: add PT/EN language support
+docs: create premium README for financeflow pro
 ```
 
 ---
@@ -158,8 +160,12 @@ Developed by **Bonifácio / devbonifacio**
 
 ---
 
-## ⭐ Final Note
+## ⭐ Final note
 
-If you like the project, give it a star and use it in your portfolio.
+This project was built to be:
+- clean
+- premium
+- portfolio-ready
+- visually strong on GitHub
 
-This version was built to look **clean, modern, premium and portfolio-ready** 🚀
+If you like it, give it a star ⭐
