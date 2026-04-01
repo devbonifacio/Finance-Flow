@@ -36,15 +36,13 @@ It allows you to:
 
 ## 🌐 Live Demo
 
-After publishing with GitHub Pages, your link will look like this:
+
 
 ```md
 https://devbonifacio.github.io/Finance-Flow/
 ```
 
 
-
-**🔗 Live Demo:** `https://devbonifacio.github.io/Finance-Flow/`
 
 ---
 
